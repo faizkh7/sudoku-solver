@@ -65,7 +65,7 @@ def solve_sudoku(board):
                 return False
     return True
 
-def find_puzzle(image, debug=False):
+def find_puzzle(image, debug=True):
     # convert the image to grayscale and blur it slightly
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     blurred = cv2.GaussianBlur(gray, (7, 7), 3)
@@ -125,7 +125,7 @@ def find_puzzle(image, debug=False):
     # return a 2-tuple of puzzle in both RGB and grayscale
     return (puzzle, warped)
 
-def extract_digit(cell, debug=False):
+def extract_digit(cell, debug=True):
     # apply automatic thresholding to the cell and then clear any
     # connected borders that touch the border of the cell
     thresh = cv2.threshold(cell, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
@@ -186,7 +186,7 @@ def identify_digit(image, debug=False):
     return digit_value
 
 sudoku_array = [[0 for _ in range(9)] for _ in range(9)]
-image = cv2.imread('suddoku solver/sud3.jpg')
+image = cv2.imread('/Users/faizkhan/Desktop/FAI/sudoku solver/sud3.jpg')
 # find the puzzle in the image and then
 (puzzleImage, warped) = find_puzzle(image)
 
