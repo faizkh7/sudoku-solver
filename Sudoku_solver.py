@@ -6,6 +6,8 @@ Code which:
 4 - Solve the actual puzzle using constraint Satisfaction
 
 Note that for better identification of digits, use GoogleVision API or train a CNN model
+
+Literature review - 
 '''
 
 # import the necessary packages
@@ -186,7 +188,7 @@ def identify_digit(image, debug=False):
     return digit_value
 
 sudoku_array = [[0 for _ in range(9)] for _ in range(9)]
-image = cv2.imread('/Users/faizkhan/Desktop/FAI/sudoku solver/sud3.jpg')
+image = cv2.imread('/Users/faizkhan/Desktop/FAI/sud1.jpg')
 # find the puzzle in the image and then
 (puzzleImage, warped) = find_puzzle(image)
 
@@ -220,13 +222,42 @@ for y in range(0, 9):
         # verify that the digit is not empty
 
         if digit is not None:
-            sudoku_array[y][x] = int(identify_digit(digit))
+            sudoku_array[y][x] = (identify_digit(digit))
             if sudoku_array[y][x] == '':
                 sudoku_array[y][x] = 0
+            else:
+                 sudoku_array[y][x] = int(sudoku_array[y][x])
+        
+    cellLocs.append(row)
 
+#print(cellLocs)
 print("Initial Board:")
 print_board(sudoku_array)
 print("\nSolving...\n")
 solve_sudoku(sudoku_array)
 print("\nSolved Board:")
 print_board(sudoku_array)
+
+# Loop over the cell locations and board
+
+x = 0
+y = 0
+for (cellRow, boardRow) in zip(cellLocs, sudoku_array):
+    # Loop over individual cell in the row
+    for (box, digit) in zip(cellRow, boardRow):
+        # Unpack the cell coordinates
+        startX, startY, endX, endY = box
+        
+        # Compute the coordinates of where the digit will be drawn on the output puzzle image
+        textX = int((endX - startX) * 0.33)
+        textY = int((endY - startY) * -0.2)
+        textX += startX 
+        textY += endY
+        # Draw the result digit on the Sudoku puzzle image
+        cv2.putText(puzzleImage, str(sudoku_array[x % 9][y % 9]), (textX, textY),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 255), 3, cv2.LINE_AA)
+        y+=1
+    x+=1
+# Show the output image
+cv2.imshow("Sudoku Result", puzzleImage)
+cv2.waitKey(0)
